@@ -72,7 +72,7 @@ if __name__ == "__main__":
         )
 
         try:
-            print("Checking for file")
+            print(f"Checking for file: {os.path.abspath(filename)}")
             if os.path.exists(f"udtalelser/{filename}"):
                 print("File already exists. File not written!")
                 print("To create the file, delete existing file first and run the script again.")
