@@ -4,6 +4,8 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import date
 import json, makejson, os
 
+# https://realpython.com/primer-on-jinja-templating/
+
 today = date.today()
 
 date = today.strftime("%d.%m.%Y")
