@@ -10,7 +10,7 @@ def create_student_dict(students):
 
     my_list = []
 
-    last_column = len(list(ws.columns))
+    last_column = 2
     last_row = len(list(ws.rows))
 
     for row in range(2, last_row + 1):
