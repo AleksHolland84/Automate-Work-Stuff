@@ -1,6 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 from datetime import date
-import json, make_jsonObj
+import json
+import make_jsonObj_v1 as make_jsonObj
 import streamlit as st # pip install streamlit
 import pandas as pd # pip install pandas
 import base64  # Standard Python Module
@@ -37,35 +38,60 @@ st.set_page_config(page_title='Projekttalelser')
 if __name__ == "__main__":
     st.title('Projektudtalelser')
 
+    # Sæt antal elever:
+    class_size = st.slider(label='Hvor mange elever skal bedømmes?', min_value=1, max_value=40, value=1)
+    class_size += 1
+
+    # Sæt Overemne:
+    main_topic = st.text_input('Overemne:', 'Det moderne samfund')
+
+
+    # Sæt lærere
+    col1, col2 = st.columns(2)
+    with col1:
+        teacher_1 = st.text_input('Lærer 1', 'KK')
+    with col2:
+        teacher_2 = st.text_input('Lærer 2', 'AH')
+
+    container = st.container()
     # Download student.elsx DataFrame
-    st.markdown('''Download skabelonen, udfyld den og upload den efterfølgende til siden.
+    container.subheader('Excel Skabelon')
+    container.markdown('''Download skabelonen, udfyld den og upload den efterfølgende til siden.
     Dette vil generere elevudtalelser på baggrund af den data skabelonen indeholder''')
-    with open('students.xlsx', 'rb') as my_file:
+    with open('template_v1.xlsx', 'rb') as my_file:
         st.download_button(label = 'Download skabelon', data = my_file, file_name = 'Template.xlsx', mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') 
 
     
-
-
-    st.subheader('Træk os slip excelfilen herunder')
     uploaded_file = st.file_uploader('Upload dit Excelark herunder', type='xlsx')
     if uploaded_file:
+        st.write('Skabelon uploaded')
+
+    if st.button('Tryk for at generer data'):
+        st.write('Generer udtalelser')
         st.markdown('---')
-        df = pd.read_excel(uploaded_file, engine='openpyxl')
+        if uploaded_file:
+            template = uploaded_file
+        else:
+            template = "template_v2.xlsx"
+        
+        df = pd.read_excel(template, engine='openpyxl')
 
-        st.markdown('Nedenfor er et datasæt, som du kan bruge til at kontrollere dit uploaded data')
-        st.dataframe(df)
+        #st.markdown('Nedenfor er et datasæt, som du kan bruge til at kontrollere dit uploaded data')
+        #st.dataframe(df)
 
-        st.subheader('Downloads:')
-        generate_excel_download_link(df)
-        students = make_jsonObj.create_student_dict(uploaded_file)
+        st.subheader('Projektudtalelser:')
+        #generate_excel_download_link(df)
+        students = make_jsonObj.create_student_dict(template, int(class_size))
         students = json.loads(students)
 
         for student in students:
+            if student.get("id") == class_size:
+                break
 
             # Brug Jinja til at generere skabeloner 
             if student.get("gruppe") == "ja":
                 environment = Environment(loader=FileSystemLoader("templates/gruppe/"))
-            
+
             else:
                 environment = Environment(loader=FileSystemLoader("templates/single/"))
 
@@ -82,13 +108,15 @@ if __name__ == "__main__":
             content = template_info.render(
                 name = student.get("name"),
                 delemne = student.get("delemne"),
-                overemne = student.get("overemne"),
+                overemne = main_topic,
                 problemformulering = student.get("problemformulering"),
             ) + "\n\n"
 
-
-            template_fagligtindhold = environment.get_template(f"fagligtindhold{fag_grade}.txt")
-            content = content + template_fagligtindhold.render() + "\n\n"
+            if student.get("gruppe") == "ja":
+                template_gruppe = environment.get_template("gruppe.txt")
+                content = content + template_gruppe.render(
+                    elev = student.get("name"),
+                )+ "\n\n"
 
             template_arbejdsprocessen = environment.get_template(f"arbejdsprocessen{arb_grade}.txt")
             content = content + template_arbejdsprocessen.render() + "\n\n"
@@ -97,18 +125,17 @@ if __name__ == "__main__":
             content = content + template_produkt.render() + "\n\n"
 
             template_fremlæggelse = environment.get_template(f"fremlæggelse{frem_grade}.txt")
-            content = content + template_fremlæggelse.render() + "\n"
+            content = content + template_fremlæggelse.render() + "\n\n"
 
-            
+            template_fagligtindhold = environment.get_template(f"fagligtindhold{fag_grade}.txt")
+            content = content + template_fagligtindhold.render() + "\n\n"
 
             content = content + template_bedømmelse.render(
                 date = date,
                 grade = student.get("grade"),
-                lærer1 = student.get("lærer1"),
-                lærer2 = student.get("lærer2"),
+                lærer1 = teacher_1,
+                lærer2 = teacher_2,
             )
-
-
 
             #df_student = pd.read_csv(StringIO(content))
             #generate_student_link(content, name=navn)

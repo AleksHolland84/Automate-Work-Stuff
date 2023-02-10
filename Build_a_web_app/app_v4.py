@@ -106,11 +106,18 @@ if __name__ == "__main__":
             ) + "\n\n"
 
 
-            template_fagligtindhold = environment.get_template(f"fagligtindhold{fag_grade}.txt")
-            content = content + template_fagligtindhold.render() + "\n\n"
+            if gruppe_checkbox == True:
+                template_gruppe = environment.get_template("gruppe.txt")
+                content = content + template_gruppe.render(
+                    elev = navn,
+                )+ "\n\n"
 
             template_arbejdsprocessen = environment.get_template(f"arbejdsprocessen{arb_grade}.txt")
             content = content + template_arbejdsprocessen.render() + "\n\n"
+
+            template_fagligtindhold = environment.get_template(f"fagligtindhold{fag_grade}.txt")
+            content = content + template_fagligtindhold.render() + "\n\n"
+
 
             template_produkt = environment.get_template(f"produkt{pro_grade}.txt")
             content = content + template_produkt.render() + "\n\n"
