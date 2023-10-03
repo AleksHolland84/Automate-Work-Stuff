@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<style>
+/* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-image: url( {{ url_for('static', filename='rick.jpg')}} );
+    background-position: center;
+    background-color: #f0f0f0; /* Change the background color as needed */
+}
+
+/* Center the login container vertically and horizontally */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style the login form */
+.login-form {
+    background-color: #fff; /* Background color for the form */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+    text-align: center;
+}
+
+/* Style the input field container */
+.input-container {
+    margin-bottom: 20px;
+    position: relative; /* Create a relative positioning context for the lock icon */
+}
+
+input[type="password"] {
+    width: 80%;
+    padding: 10px 10px 10px 40px; /* Add padding to accommodate the lock icon */
+    border: 1px solid #ccc; /* Add a border around the input */
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Style the lock icon */
+.lock-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    width: 20px; /* Adjust the size as needed */
+    height: 20px;
+    background-image: url( {{ url_for('static', filename='lock-icon.svg') }}); /* Set the background image path */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Style the login button */
+button {
+    background-color: #007bff; /* Button color */
+    color: #fff; /* Text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3; /* Button color on hover */
+}
+
+.result {
+    -webkit-animation: cssAnimation 2s forwards;
+    animation: cssAnimation 2s forwards;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: red;
+}
+
+@keyframes cssAnimation {
+    0%    {opacity: 1;}
+    90%   {opacity: 1;}
+    100%  {opacity: 0;}
+}
+
+@-webkit-keyframes cssAnimation {
+    0%    {opacity: 1;}
+    90%   {opacity: 1;}
+    100%  {opacity: 0;}
+}
+
+</style>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>Login</h1>
+            <form method="post" action="/login">
+                <div class="input-container">
+                    <input type="password" placeholder="Password" id="password" name="password" required>
+                    <span class="lock-icon"></span>
+                </div>
+                <button type="submit">Log In</button>
+            </form>
+         </div>
+        <p>Password is in this <a href="https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Leaked-Databases/rockyou-25.txt" target="_blank">wordlist</a><p>
+    </div>
+    <div class="result" id="loginResult">{{ login_result }}</div>
+   
+</body>
+</html>
+

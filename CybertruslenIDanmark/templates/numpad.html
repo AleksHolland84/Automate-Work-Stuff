@@ -1,0 +1,95 @@
+<!-- templates/numpad.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Numpad Example</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .numpad {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .numpad .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-left: 20px;
+        }
+        .numpad button {
+            font-size: 24px;
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .numpad input {
+            font-size: 24px;
+            padding: 10px;
+            text-align: center;
+            width: calc(100% - 70px);
+            margin-bottom: 10px;
+        }
+        .numpad .result {
+            font-size: 24px;
+            font-weight: bold;
+            color: #006600;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="numpad">
+        <h1>Lego Spike Bank</h1>
+        <form method="post" action="/process">
+            <input type="password" id="display" name="pincode" readonly>
+            <div class="keypad">
+                <button type="button" onclick="appendToDisplay(1)">1</button>
+                <button type="button" onclick="appendToDisplay(2)">2</button>
+                <button type="button" onclick="appendToDisplay(3)">3</button>
+                <button type="button" onclick="appendToDisplay(4)">4</button>
+                <button type="button" onclick="appendToDisplay(5)">5</button>
+                <button type="button" onclick="appendToDisplay(6)">6</button>
+                <button type="button" onclick="appendToDisplay(7)">7</button>
+                <button type="button" onclick="appendToDisplay(8)">8</button>
+                <button type="button" onclick="appendToDisplay(9)">9</button>
+                <button type="button" onclick="appendToDisplay(0)">0</button>
+                <button type="button" onclick="clearDisplay()">C</button>
+                <button type="submit">#</button>
+            </div>
+		<div class="result" id="accessResult">{{ access_result }}</div> <!-- Display result here -->	
+        </form>
+    </div>
+    <script>
+
+        function updateAccessResult(result) {
+            var accessResult = document.getElementById('accessResult');
+            accessResult.textContent = result;
+        }
+
+        function appendToDisplay(number) {
+            var display = document.getElementById('display');
+            display.value += number;
+        }
+        
+        function clearDisplay() {
+            var display = document.getElementById('display');
+            display.value = '';
+        }
+    </script>
+</body>
+</html>
+
